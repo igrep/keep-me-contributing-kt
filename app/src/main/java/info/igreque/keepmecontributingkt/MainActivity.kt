@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val btn = findViewById<Button>(R.id.button)
-        val name = findViewById<EditText>(R.id.contributorName).text
-        val url = findViewById<EditText>(R.id.inputRepositoryUrl).text
-        btn.setOnClickListener { model.startPolling(name, url) }
+        val userName = findViewById<EditText>(R.id.inputContributorName).text
+        val repositoryName = findViewById<EditText>(R.id.inputRepositoryName).text
+        btn.setOnClickListener { model.startPolling(userName, repositoryName) }
     }
 }

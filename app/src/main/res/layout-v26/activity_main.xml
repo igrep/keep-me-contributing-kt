@@ -11,16 +11,16 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/contributorName" android:hint="@string/github_user_name"
+            android:id="@+id/inputContributorName" android:hint="@string/github_user_name"
             android:importantForAutofill="no"/>
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textUri"
             android:ems="10"
-            android:id="@+id/inputRepositoryUrl"
+            android:id="@+id/inputRepositoryName"
             android:importantForAutofill="no"
-            android:hint="@string/repository_url"/>
+            android:hint="@string/repository_name"/>
     <Button
             android:text="@string/button"
             android:layout_width="wrap_content"
