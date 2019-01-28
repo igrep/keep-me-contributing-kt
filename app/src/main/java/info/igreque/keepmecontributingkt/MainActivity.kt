@@ -10,13 +10,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val view = ViewViaNotification.createWithNotificationChannel(applicationContext)
-        val model = ContributionStatusChecker(view::show)
+        val repository = CheckTargetRepository(applicationContext)
+        val update = UpdateCheckTargetInteraction(view, repository)
 
         setContentView(R.layout.activity_main)
 
         val btn = findViewById<Button>(R.id.button)
         val userName = findViewById<EditText>(R.id.inputContributorName).text
         val repositoryName = findViewById<EditText>(R.id.inputRepositoryName).text
-        btn.setOnClickListener { model.startPolling(userName, repositoryName) }
+        btn.setOnClickListener { update.run(userName, repositoryName) }
     }
 }
