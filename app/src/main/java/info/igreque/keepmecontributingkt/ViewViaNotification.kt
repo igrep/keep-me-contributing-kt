@@ -61,10 +61,10 @@ class ViewViaNotification(private val context: Context) {
     fun messageFromCheckResult(result: ContributionStatusChecker.CheckResult): CharSequence =
         when (result.contributionStatus) {
             ContributionStatus.UNKNOWN ->
-                "Checking the contributions by ${result.target.contributor} to ${result.target.repositoryName}..."
+                "Checking the contributions by ${result.target.contributorName} to ${result.target.repositoryName}..."
             ContributionStatus.NOT_YET ->
-                "Watch out! NO contributions by ${result.target.contributor} to ${result.target.repositoryName} today!"
+                "Watch out! NO contributions by ${result.target.contributorName} to ${result.target.repositoryName} today!"
             ContributionStatus.DONE ->
-                "Yahoo! ${result.target.contributor} has already contributed to ${result.target.repositoryName} today!"
+                "Yahoo! ${result.target.contributorName} has already contributed to ${result.target.repositoryName} today!"
         }
 }

@@ -7,6 +7,8 @@ class ContributionStatusChecker(private val onChanged: (CheckResult) -> Unit) {
     )
 
     fun startPolling(target: CheckTarget) {
-        onChanged(CheckResult(target, ContributionStatus.UNKNOWN))
+        if (target.isFilled()) {
+            onChanged(CheckResult(target, ContributionStatus.UNKNOWN))
+        }
     }
 }
