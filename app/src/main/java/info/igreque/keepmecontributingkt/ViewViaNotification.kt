@@ -56,7 +56,7 @@ class ViewViaNotification(private val context: Context) {
     }
 
     fun shouldBeSticky(result: ContributionStatusChecker.CheckResult): Boolean =
-        result.contributionStatus != ContributionStatus.DONE
+        result.contributionStatus == ContributionStatus.NOT_YET
 
     fun messageFromCheckResult(result: ContributionStatusChecker.CheckResult): CharSequence =
         when (result.contributionStatus) {

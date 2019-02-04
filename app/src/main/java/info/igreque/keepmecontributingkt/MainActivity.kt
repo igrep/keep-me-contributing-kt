@@ -1,6 +1,5 @@
 package info.igreque.keepmecontributingkt
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
@@ -23,14 +22,17 @@ class MainActivity : AppCompatActivity() {
         val viewRepositoryName = findViewById<TextView>(R.id.inputRepositoryName)
         viewRepositoryName.text = target.repositoryName
 
+        val view = ViewViaNotification.createWithNotificationChannel(applicationContext)
+        val repository = CheckTargetRepository(applicationContext)
+        val scheduler = Scheduler(applicationContext)
+
         btn.setOnClickListener {
             val userName = findViewById<EditText>(R.id.inputContributorName).text.toString()
             val repositoryName = findViewById<EditText>(R.id.inputRepositoryName).text.toString()
-            val i = Intent()
-            i.putExtra(ContributionStatusCheckerService.EXTRA_CONTRIBUTOR_NAME, userName)
-            i.putExtra(ContributionStatusCheckerService.EXTRA_REPOSITORY_NAME, repositoryName)
-            i.action = ContributionStatusCheckerService.ACTION_UPDATE_PREFERENCES_DONE
-            ContributionStatusCheckerService.enqueueWork(applicationContext, i)
+            UpdateCheckTargetInteraction(view, repository).run(userName, repositoryName)
+
+            scheduler.cancel() // Cancel the already running job.
+            scheduler.schedule(ContributionStatusCheckerService::class.java)
         }
     }
 }
