@@ -5,12 +5,12 @@ import android.content.Context
 class CheckTargetRepository(private val context: Context) {
     private val fileName = "pref"
 
-    private val keyContributor = "contributorName"
+    private val keyContributorName = "contributorName"
     private val keyRepositoryName = "repositoryName"
 
     fun save(target: CheckTarget) {
         val editor = context.getSharedPreferences(fileName, Context.MODE_PRIVATE).edit()
-        editor.putString(keyContributor, target.contributorName.toString())
+        editor.putString(keyContributorName, target.contributorName.toString())
         editor.putString(keyRepositoryName, target.repositoryName.toString())
         editor.apply()
     }
@@ -18,7 +18,7 @@ class CheckTargetRepository(private val context: Context) {
     fun load(): CheckTarget {
         val pref = context.getSharedPreferences(fileName, Context.MODE_PRIVATE)
         return CheckTarget(
-            pref.getString(keyContributor, "") ?: "",
+            pref.getString(keyContributorName, "") ?: "",
             pref.getString(keyRepositoryName, "") ?: ""
         )
     }
