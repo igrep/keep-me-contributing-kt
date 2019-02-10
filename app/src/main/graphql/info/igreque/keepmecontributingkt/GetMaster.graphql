@@ -1,0 +1,15 @@
+query GetMaster($repositoryName: String!, $contributorName: String!) {
+  repository(name: $repositoryName, owner: $contributorName) {
+    ref(qualifiedName: "master") {
+      target {
+        ... on Commit {
+          history(first: 1) {
+            nodes {
+              committedDate
+            }
+          }
+        }
+      }
+    }
+  }
+}

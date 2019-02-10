@@ -22,6 +22,9 @@ class MainActivity : AppCompatActivity() {
         val viewRepositoryName = findViewById<TextView>(R.id.inputRepositoryName)
         viewRepositoryName.text = target.repositoryName
 
+        val viewAccessToken = findViewById<TextView>(R.id.inputAccessToken)
+        viewAccessToken.text = target.accessToken
+
         val view = ViewViaNotification.createWithNotificationChannel(applicationContext)
         val repository = CheckTargetRepository(applicationContext)
         val scheduler = Scheduler(applicationContext)
@@ -29,7 +32,9 @@ class MainActivity : AppCompatActivity() {
         btn.setOnClickListener {
             val userName = findViewById<EditText>(R.id.inputContributorName).text.toString()
             val repositoryName = findViewById<EditText>(R.id.inputRepositoryName).text.toString()
-            UpdateCheckTargetInteraction(view, repository).run(userName, repositoryName)
+            val accessToken = findViewById<EditText>(R.id.inputAccessToken).text.toString()
+            val gitHubClient = GitHubClientImpl(accessToken)
+            UpdateCheckTargetInteraction(view, gitHubClient, repository).run(userName, repositoryName, accessToken)
 
             scheduler.cancel() // Cancel the already running job.
             scheduler.schedule(ContributionStatusCheckerService::class.java)

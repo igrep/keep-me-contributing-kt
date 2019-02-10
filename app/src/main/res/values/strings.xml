@@ -5,4 +5,5 @@
     <string name="channel_description">Show whether you have contributed today</string>
     <string name="repository_name">Repository Name (Optionally prefixed by "user_name/")</string>
     <string name="github_user_name">GitHub User Name</string>
+    <string name="access_token">GitHub Personal Access Token</string>
 </resources>

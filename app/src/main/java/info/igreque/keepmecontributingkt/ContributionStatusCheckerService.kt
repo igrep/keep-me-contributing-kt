@@ -11,8 +11,9 @@ class ContributionStatusCheckerService : JobService() {
             val view =
                 ViewViaNotification.createWithNotificationChannel(applicationContext)
             val repository = CheckTargetRepository(applicationContext)
+            val gitHubClient = GitHubClientImpl(repository.load().accessToken.toString())
             Log.i("INFO", "Beginning Job")
-            LaunchCheckerInteraction(view, repository).run()
+            LaunchCheckerInteraction(view, gitHubClient, repository).run()
         }.start()
         return true
     }

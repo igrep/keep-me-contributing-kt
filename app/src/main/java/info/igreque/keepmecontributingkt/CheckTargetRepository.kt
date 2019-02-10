@@ -7,11 +7,13 @@ class CheckTargetRepository(private val context: Context) {
 
     private val keyContributorName = "contributorName"
     private val keyRepositoryName = "repositoryName"
+    private val keyAccessToken = "accessToken"
 
     fun save(target: CheckTarget) {
         val editor = context.getSharedPreferences(fileName, Context.MODE_PRIVATE).edit()
         editor.putString(keyContributorName, target.contributorName.toString())
         editor.putString(keyRepositoryName, target.repositoryName.toString())
+        editor.putString(keyAccessToken, target.accessToken.toString())
         editor.apply()
     }
 
@@ -19,7 +21,8 @@ class CheckTargetRepository(private val context: Context) {
         val pref = context.getSharedPreferences(fileName, Context.MODE_PRIVATE)
         return CheckTarget(
             pref.getString(keyContributorName, "") ?: "",
-            pref.getString(keyRepositoryName, "") ?: ""
+            pref.getString(keyRepositoryName, "") ?: "",
+            pref.getString(keyAccessToken, "") ?: ""
         )
     }
 }
