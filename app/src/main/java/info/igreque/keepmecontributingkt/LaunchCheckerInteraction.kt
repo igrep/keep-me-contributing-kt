@@ -1,12 +1,14 @@
 package info.igreque.keepmecontributingkt
 
+import java.util.*
+
 class LaunchCheckerInteraction(
     view: ViewViaNotification,
     gitHubClient: GitHubClient,
     private val repository: CheckTargetRepository
 ) {
-    private val model: ContributionStatusChecker = ContributionStatusChecker(view::show, gitHubClient)
+    // TODO: Log and save the result
+    private val model: ContributionStatusChecker = ContributionStatusChecker(view::show, gitHubClient) { Date() }
 
     fun run() = model.startPolling(repository.load())
-
 }
