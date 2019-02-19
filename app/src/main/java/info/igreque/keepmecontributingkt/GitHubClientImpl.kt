@@ -38,14 +38,14 @@ class GitHubClientImpl(private val accessToken: String) : GitHubClient {
             dateFormat.parse(value.value.toString())
     }
 
-    override suspend fun getLatestCommitDateString(repositoryName: String, contributorName: String): Date =
+    override suspend fun getLatestCommitDate(contributorName: String, repositoryName: String): Date =
         suspendCoroutine { cont ->
             ApolloClient.builder().run {
                 okHttpClient(okHttpClient)
                 serverUrl("https://api.github.com/graphql")
                 addCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
                 build()
-            }.query(GetMasterQuery(repositoryName, contributorName)).enqueue(
+            }.query(GetMasterQuery(contributorName, repositoryName)).enqueue(
                 object : ApolloCall.Callback<GetMasterQuery.Data>() {
                     override fun onResponse(response: Response<GetMasterQuery.Data>) {
                         val target =

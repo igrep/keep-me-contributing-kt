@@ -1,5 +1,5 @@
-query GetMaster($repositoryName: String!, $contributorName: String!) {
-  repository(name: $repositoryName, owner: $contributorName) {
+query GetMaster($contributorName: String!, $repositoryName: String!) {
+  repository(owner: $contributorName, name: $repositoryName) {
     ref(qualifiedName: "master") {
       target {
         ... on Commit {
