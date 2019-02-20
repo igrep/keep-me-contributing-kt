@@ -15,14 +15,29 @@ class ContributionStatusChecker(
 
     fun startPolling(target: CheckTarget) {
         if (target.isFormFilled()) {
-            onChanged(CheckResult(target, ContributionStatus.DONE))
+            onChanged(CheckResult(target, ContributionStatus.UNKNOWN))
+
+            val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
+                time = getCurrentTime(Unit)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                time
+            }
             runBlocking {
-                println(
-                    gitHubClient.getLatestCommitDate(
-                        target.repositoryName.toString(),
-                        target.contributorName.toString()
-                    ).toString()
+                val latestCommitDate = gitHubClient.getLatestCommitDate(
+                    target.repositoryName.toString(),
+                    target.contributorName.toString()
                 )
+
+                val contributionStatus =
+                    if (latestCommitDate > beginningOfToday) {
+                        ContributionStatus.DONE
+                    } else {
+                        ContributionStatus.NOT_YET
+                    }
+                onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
             }
         }
     }

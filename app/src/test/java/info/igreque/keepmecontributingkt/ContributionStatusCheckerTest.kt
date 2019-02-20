@@ -25,6 +25,7 @@ class ContributionStatusCheckerTest {
         }
 
         private val calendar = Calendar.getInstance(Locale("ja", "JP", "JP"))
+        private val currentTimeDayOfMonth = 2
         private val currentTimeHour = 12
 
         @BeforeEach
@@ -32,6 +33,7 @@ class ContributionStatusCheckerTest {
             clearMocks(gitHubClient)
 
             calendar.set(Calendar.HOUR_OF_DAY, currentTimeHour)
+            calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth)
             currentTime = calendar.time
 
             lastCheckResult = null
@@ -55,19 +57,29 @@ class ContributionStatusCheckerTest {
 
             @Test
             fun whenGitHubClientReturnsTimeOfToday() {
-                calendar.time = currentTime
                 calendar.set(Calendar.HOUR_OF_DAY, currentTimeHour - 1)
-
                 val returnedTime = calendar.time
                 coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.returns(returnedTime)
 
-                val target = CheckTarget("repository", "contributor", "accessToken", null)
-                subject.startPolling(target)
-
-                assertThat(lastCheckResult).isEqualTo(
-                    ContributionStatusChecker.CheckResult(target, ContributionStatus.DONE)
-                )
+                shouldCheckWithFinalResult(ContributionStatus.DONE, returnedTime)
             }
+
+            @Test
+            fun whenGitHubClientReturnsTimeOfYesterday() {
+                calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth - 1)
+                val returnedTime = calendar.time
+                coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.returns(returnedTime)
+
+                shouldCheckWithFinalResult(ContributionStatus.NOT_YET, returnedTime)
+            }
+        }
+
+        private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date) {
+            val target = CheckTarget("repository", "contributor", "accessToken", null)
+            subject.startPolling(target)
+
+            assertThat(lastCheckResult?.contributionStatus).isEqualTo(expectedStatus)
+            assertThat(lastCheckResult?.target?.lastCommitTime).isEqualTo(latestCommitTime)
         }
 
         private fun writeResult(checkResult: ContributionStatusChecker.CheckResult) {
