@@ -56,15 +56,17 @@ class ViewViaNotification(private val context: Context) {
     }
 
     fun shouldBeSticky(result: ContributionStatusChecker.CheckResult): Boolean =
-        result.contributionStatus == ContributionStatus.NOT_YET
+        result.contributionStatus == ContributionStatus.NotYet
 
     fun messageFromCheckResult(result: ContributionStatusChecker.CheckResult): CharSequence =
         when (result.contributionStatus) {
-            ContributionStatus.UNKNOWN ->
+            ContributionStatus.Unknown ->
                 "Checking the contributions by ${result.target.contributorName} to ${result.target.repositoryName}..."
-            ContributionStatus.NOT_YET ->
+            ContributionStatus.NotYet ->
                 "Watch out! NO contributions by ${result.target.contributorName} to ${result.target.repositoryName} today!"
-            ContributionStatus.DONE ->
+            ContributionStatus.Done ->
                 "Yahoo! ${result.target.contributorName} has already contributed to ${result.target.repositoryName} today!"
+            is ContributionStatus.Error ->
+                "Error when checking the contributions by  ${result.target.contributorName} to ${result.target.repositoryName}! See LogCat."
         }
 }

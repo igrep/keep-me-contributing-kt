@@ -11,6 +11,6 @@ data class CheckTarget(
     fun isFormFilled(): Boolean =
         contributorName.isNotBlank() && repositoryName.isNotBlank() && accessToken.isNotBlank()
 
-    fun updateLastCommitTime(lastCommitTime: Date) =
+    fun updateLastCommitTime(lastCommitTime: Date?) =
         CheckTarget(this.contributorName, this.repositoryName, this.accessToken, lastCommitTime)
 }

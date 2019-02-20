@@ -15,7 +15,7 @@ class ContributionStatusChecker(
 
     fun startPolling(target: CheckTarget) {
         if (target.isFormFilled()) {
-            onChanged(CheckResult(target, ContributionStatus.UNKNOWN))
+            onChanged(CheckResult(target, ContributionStatus.Unknown))
 
             val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
                 time = getCurrentTime(Unit)
@@ -26,17 +26,20 @@ class ContributionStatusChecker(
                 time
             }
             runBlocking {
-                val latestCommitDate = gitHubClient.getLatestCommitDate(
-                    target.repositoryName.toString(),
-                    target.contributorName.toString()
-                )
+                val (contributionStatus, latestCommitDate) = try {
+                    val fetchedDate = gitHubClient.getLatestCommitDate(
+                        target.repositoryName.toString(),
+                        target.contributorName.toString()
+                    )
 
-                val contributionStatus =
-                    if (latestCommitDate > beginningOfToday) {
-                        ContributionStatus.DONE
+                    if (fetchedDate > beginningOfToday) {
+                        Pair(ContributionStatus.Done, fetchedDate)
                     } else {
-                        ContributionStatus.NOT_YET
+                        Pair(ContributionStatus.NotYet, fetchedDate)
                     }
+                } catch (e: Exception) {
+                    Pair(ContributionStatus.Error(e), target.lastCommitTime)
+                }
                 onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
             }
         }

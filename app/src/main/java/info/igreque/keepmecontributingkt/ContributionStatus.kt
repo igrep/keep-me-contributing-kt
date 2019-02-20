@@ -1,6 +1,8 @@
 package info.igreque.keepmecontributingkt
 
-enum class ContributionStatus {
-    UNKNOWN, NOT_YET, DONE
-    // TODO: Add ERROR?
+sealed class ContributionStatus {
+    object Unknown : ContributionStatus()
+    object NotYet : ContributionStatus()
+    object Done : ContributionStatus()
+    data class Error(val exception: Exception) : ContributionStatus()
 }

@@ -41,9 +41,9 @@ class ContributionStatusCheckerTest {
 
         /*
         & Run gitHubClient to check:
-            - when gitHubClient returns Date of today, the result is DONE
-            - when gitHubClient returns Date of yesterday, the result is NOT_YET
-            - when gitHubClient throws an error, the result is ERROR (and is logged).
+            - when gitHubClient returns Date of today, the result is Done
+            - when gitHubClient returns Date of yesterday, the result is NotYet
+            - when gitHubClient throws an error, the result is Error (and is logged).
         When the last contributed time is null:
             * Run gitHubClient to check
         When the last contributed time is before the beginning of today:
@@ -61,7 +61,7 @@ class ContributionStatusCheckerTest {
                 val returnedTime = calendar.time
                 coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.returns(returnedTime)
 
-                shouldCheckWithFinalResult(ContributionStatus.DONE, returnedTime)
+                shouldCheckWithFinalResult(ContributionStatus.Done, returnedTime)
             }
 
             @Test
@@ -70,11 +70,19 @@ class ContributionStatusCheckerTest {
                 val returnedTime = calendar.time
                 coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.returns(returnedTime)
 
-                shouldCheckWithFinalResult(ContributionStatus.NOT_YET, returnedTime)
+                shouldCheckWithFinalResult(ContributionStatus.NotYet, returnedTime)
+            }
+
+            @Test
+            fun whenGitHubClientThrowsException() {
+                val exception = RuntimeException("Test error")
+                coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.throws(exception)
+
+                shouldCheckWithFinalResult(ContributionStatus.Error(exception), null)
             }
         }
 
-        private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date) {
+        private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date?) {
             val target = CheckTarget("repository", "contributor", "accessToken", null)
             subject.startPolling(target)
 
