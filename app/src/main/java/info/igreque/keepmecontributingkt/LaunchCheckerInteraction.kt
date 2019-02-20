@@ -10,5 +10,5 @@ class LaunchCheckerInteraction(
     // TODO: Log and save the result
     private val model: ContributionStatusChecker = ContributionStatusChecker(view::show, gitHubClient) { Date() }
 
-    fun run() = model.startPolling(repository.load())
+    fun run() = model.doCheck(repository.load())
 }

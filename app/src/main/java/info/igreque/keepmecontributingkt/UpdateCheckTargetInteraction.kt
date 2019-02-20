@@ -12,7 +12,7 @@ class UpdateCheckTargetInteraction(
 
     fun run(userName: CharSequence, repositoryName: CharSequence, accessToken: CharSequence) {
         val target = CheckTarget(userName, repositoryName, accessToken, null)
-        model.startPolling(target)
+        model.doCheck(target)
         repository.save(target)
     }
 }

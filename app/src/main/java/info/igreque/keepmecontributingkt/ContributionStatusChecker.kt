@@ -13,7 +13,7 @@ class ContributionStatusChecker(
         val contributionStatus: ContributionStatus
     )
 
-    fun startPolling(target: CheckTarget) {
+    fun doCheck(target: CheckTarget) {
         if (!target.isFormFilled()) return
 
         val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {

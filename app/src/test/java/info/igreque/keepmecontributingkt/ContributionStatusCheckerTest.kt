@@ -70,7 +70,7 @@ class ContributionStatusCheckerTest {
 
             private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date?) {
                 val target = CheckTarget("repository", "contributor", "accessToken", null)
-                subject.startPolling(target)
+                subject.doCheck(target)
 
                 assertThat(lastCheckResult?.contributionStatus).isEqualTo(expectedStatus)
                 assertThat(lastCheckResult?.target?.lastCommitTime).isEqualTo(latestCommitTime)
@@ -85,7 +85,7 @@ class ContributionStatusCheckerTest {
                 calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth)
                 val targetTime = calendar.time
                 val target = CheckTarget("repository", "contributor", "accessToken", targetTime)
-                subject.startPolling(target)
+                subject.doCheck(target)
                 assertThat(lastCheckResult).isNull()
             }
         }
