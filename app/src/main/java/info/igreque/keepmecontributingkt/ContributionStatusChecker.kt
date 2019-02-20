@@ -14,34 +14,40 @@ class ContributionStatusChecker(
     )
 
     fun startPolling(target: CheckTarget) {
-        if (target.isFormFilled()) {
-            onChanged(CheckResult(target, ContributionStatus.Unknown))
+        if (!target.isFormFilled()) return
 
-            val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
-                time = getCurrentTime(Unit)
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-                time
-            }
-            runBlocking {
-                val (contributionStatus, latestCommitDate) = try {
-                    val fetchedDate = gitHubClient.getLatestCommitDate(
-                        target.repositoryName.toString(),
-                        target.contributorName.toString()
-                    )
+        val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
+            time = getCurrentTime(Unit)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            time
+        }
 
-                    if (fetchedDate > beginningOfToday) {
-                        Pair(ContributionStatus.Done, fetchedDate)
-                    } else {
-                        Pair(ContributionStatus.NotYet, fetchedDate)
-                    }
-                } catch (e: Exception) {
-                    Pair(ContributionStatus.Error(e), target.lastCommitTime)
+        if (hasAlreadyCommittedAfter(target, beginningOfToday)) return
+
+        onChanged(CheckResult(target, ContributionStatus.Unknown))
+
+        runBlocking {
+            val (contributionStatus, latestCommitDate) = try {
+                val fetchedDate = gitHubClient.getLatestCommitDate(
+                    target.repositoryName.toString(),
+                    target.contributorName.toString()
+                )
+
+                if (fetchedDate > beginningOfToday) {
+                    Pair(ContributionStatus.Done, fetchedDate)
+                } else {
+                    Pair(ContributionStatus.NotYet, fetchedDate)
                 }
-                onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
+            } catch (e: Exception) {
+                Pair(ContributionStatus.Error(e), target.lastCommitTime)
             }
+            onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
         }
     }
+
+    private fun hasAlreadyCommittedAfter(target: CheckTarget, beginningOfToday: Date?) =
+        target.lastCommitTime != null && target.lastCommitTime > beginningOfToday
 }

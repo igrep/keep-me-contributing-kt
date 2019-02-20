@@ -39,19 +39,6 @@ class ContributionStatusCheckerTest {
             lastCheckResult = null
         }
 
-        /*
-        & Run gitHubClient to check:
-            - when gitHubClient returns Date of today, the result is Done
-            - when gitHubClient returns Date of yesterday, the result is NotYet
-            - when gitHubClient throws an error, the result is Error (and is logged).
-        When the last contributed time is null:
-            * Run gitHubClient to check
-        When the last contributed time is before the beginning of today:
-            * Run gitHubClient to check
-        When the last contributed time is after the beginning of today:
-            - Don't run gitHubClient
-        */
-
         @Nested
         inner class WhenLastContributedTimeIsNull {
 
@@ -80,14 +67,27 @@ class ContributionStatusCheckerTest {
 
                 shouldCheckWithFinalResult(ContributionStatus.Error(exception), null)
             }
+
+            private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date?) {
+                val target = CheckTarget("repository", "contributor", "accessToken", null)
+                subject.startPolling(target)
+
+                assertThat(lastCheckResult?.contributionStatus).isEqualTo(expectedStatus)
+                assertThat(lastCheckResult?.target?.lastCommitTime).isEqualTo(latestCommitTime)
+            }
         }
 
-        private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date?) {
-            val target = CheckTarget("repository", "contributor", "accessToken", null)
-            subject.startPolling(target)
-
-            assertThat(lastCheckResult?.contributionStatus).isEqualTo(expectedStatus)
-            assertThat(lastCheckResult?.target?.lastCommitTime).isEqualTo(latestCommitTime)
+        @Nested
+        inner class WhenLastContributedTimeIsAfterBeginningOfToday {
+            @Test
+            fun shouldNeverCallOnChanged() {
+                calendar.set(Calendar.HOUR_OF_DAY, currentTimeHour - 1)
+                calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth)
+                val targetTime = calendar.time
+                val target = CheckTarget("repository", "contributor", "accessToken", targetTime)
+                subject.startPolling(target)
+                assertThat(lastCheckResult).isNull()
+            }
         }
 
         private fun writeResult(checkResult: ContributionStatusChecker.CheckResult) {
