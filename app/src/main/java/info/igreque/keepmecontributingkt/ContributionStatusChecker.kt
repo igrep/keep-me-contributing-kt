@@ -17,6 +17,7 @@ class ContributionStatusChecker(
 
         val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
             time = getCurrentTime(Unit)
+            timeZone = TimeZone.getTimeZone("JST")
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -30,8 +31,8 @@ class ContributionStatusChecker(
 
         val (contributionStatus, latestCommitDate) = try {
             val fetchedDate = gitHubClient.getLatestCommitDate(
-                target.repositoryName.toString(),
-                target.contributorName.toString()
+                target.contributorName.toString(),
+                target.repositoryName.toString()
             )
 
             if (fetchedDate > beginningOfToday) {

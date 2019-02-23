@@ -70,7 +70,7 @@ class ContributionStatusCheckerTest {
             }
 
             private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date?) {
-                val target = CheckTarget("repository", "contributor", "accessToken", null)
+                val target = CheckTarget("contributor", "repository", "accessToken", null)
                 runBlocking { subject.doCheck(target) }
 
                 assertThat(lastCheckResult?.contributionStatus).isEqualTo(expectedStatus)
