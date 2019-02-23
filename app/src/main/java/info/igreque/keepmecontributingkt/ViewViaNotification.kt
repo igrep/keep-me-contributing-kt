@@ -39,7 +39,7 @@ class ViewViaNotification(private val context: Context) {
 
     fun show(result: ContributionStatusChecker.CheckResult) {
         builder.apply {
-            setSmallIcon(R.mipmap.ic_launcher)
+            setSmallIcon(iconIdFromResult(result))
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
             setContentTitle("Have I contributed today?")
             setContentText(messageFromCheckResult(result))
@@ -68,5 +68,17 @@ class ViewViaNotification(private val context: Context) {
                 "Yahoo! ${result.target.contributorName} has already contributed to ${result.target.repositoryName} today!"
             is ContributionStatus.Error ->
                 "Error when checking the contributions by  ${result.target.contributorName} to ${result.target.repositoryName}! See LogCat."
+        }
+
+    fun iconIdFromResult(result: ContributionStatusChecker.CheckResult): Int =
+        when (result.contributionStatus) {
+            ContributionStatus.Unknown ->
+                R.drawable.ic_notify_unknown
+            ContributionStatus.NotYet ->
+                R.drawable.ic_notify_not_yet
+            ContributionStatus.Done ->
+                R.drawable.ic_notify_done
+            is ContributionStatus.Error ->
+                R.drawable.ic_notify_error
         }
 }
