@@ -13,4 +13,7 @@ data class CheckTarget(
 
     fun updateLastCommitTime(lastCommitTime: Date?) =
         CheckTarget(this.contributorName, this.repositoryName, this.accessToken, lastCommitTime)
+
+    override fun toString() =
+        "CheckTarget(contributorName=$contributorName, repositoryName=$repositoryName, accessToken=*****, lastCommitTime=$lastCommitTime)"
 }

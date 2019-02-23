@@ -11,11 +11,14 @@ class Scheduler(private val context: Context) {
     private val jobId = 1
     private val scheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
+    private val estimatedDownloadBytes: Long = 1700
+    private val estimatedUploadBytes: Long = 1500
+
     fun <T : JobService> schedule(klass: Class<T>) {
         val jobInfo = JobInfo.Builder(jobId, ComponentName(context, klass))
             .apply {
-                // setEstimatedNetworkBytes TODO
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    setEstimatedNetworkBytes(estimatedDownloadBytes, estimatedUploadBytes)
                     setImportantWhileForeground(true)
                 }
                 setRequiresDeviceIdle(false)

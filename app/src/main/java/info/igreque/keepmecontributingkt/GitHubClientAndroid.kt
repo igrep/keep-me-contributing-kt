@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class GitHubClientImpl(private val accessToken: String) : GitHubClient {
+class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
     private val okHttpClient = OkHttpClient.Builder().run {
         authenticator { _, response ->
             response

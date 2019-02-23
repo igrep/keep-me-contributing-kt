@@ -5,15 +5,11 @@ import android.app.job.JobService
 import android.util.Log
 
 class ContributionStatusCheckerService : JobService() {
-
     override fun onStartJob(params: JobParameters?): Boolean {
         Thread {
-            val view =
-                ViewViaNotification.createWithNotificationChannel(applicationContext)
-            val repository = CheckTargetRepository(applicationContext)
-            val gitHubClient = GitHubClientImpl(repository.load().accessToken.toString())
             Log.i("INFO", "Beginning Job")
-            LaunchCheckerInteraction(view, gitHubClient, repository).run()
+            LaunchCheckerInteraction(EnvAndroid(applicationContext)).run()
+            jobFinished(params, false)
         }.start()
         return true
     }
