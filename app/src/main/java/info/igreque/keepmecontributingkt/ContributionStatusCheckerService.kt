@@ -3,16 +3,26 @@ package info.igreque.keepmecontributingkt
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class ContributionStatusCheckerService : JobService() {
+class ContributionStatusCheckerService : JobService(), CoroutineScope {
+    private val job = Job()
+    override val coroutineContext = Dispatchers.Main + job
+
     override fun onStartJob(params: JobParameters?): Boolean {
-        Thread {
+        launch {
             Log.i("INFO", "Beginning Job")
             LaunchCheckerInteraction(EnvAndroid(applicationContext)).run()
             jobFinished(params, false)
-        }.start()
+        }
         return true
     }
 
-    override fun onStopJob(params: JobParameters?): Boolean = true
+    override fun onStopJob(params: JobParameters?): Boolean {
+        job.cancel()
+        return true
+    }
 }

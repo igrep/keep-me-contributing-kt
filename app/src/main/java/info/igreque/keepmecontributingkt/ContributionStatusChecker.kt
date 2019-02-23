@@ -1,6 +1,5 @@
 package info.igreque.keepmecontributingkt
 
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class ContributionStatusChecker(
@@ -13,7 +12,7 @@ class ContributionStatusChecker(
         val contributionStatus: ContributionStatus
     )
 
-    fun doCheck(target: CheckTarget) {
+    suspend fun doCheck(target: CheckTarget) {
         if (!target.isFormFilled()) return
 
         val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
@@ -29,23 +28,21 @@ class ContributionStatusChecker(
 
         onChanged(CheckResult(target, ContributionStatus.Unknown))
 
-        runBlocking {
-            val (contributionStatus, latestCommitDate) = try {
-                val fetchedDate = gitHubClient.getLatestCommitDate(
-                    target.repositoryName.toString(),
-                    target.contributorName.toString()
-                )
+        val (contributionStatus, latestCommitDate) = try {
+            val fetchedDate = gitHubClient.getLatestCommitDate(
+                target.repositoryName.toString(),
+                target.contributorName.toString()
+            )
 
-                if (fetchedDate > beginningOfToday) {
-                    Pair(ContributionStatus.Done, fetchedDate)
-                } else {
-                    Pair(ContributionStatus.NotYet, fetchedDate)
-                }
-            } catch (e: Exception) {
-                Pair(ContributionStatus.Error(e), target.lastCommitTime)
+            if (fetchedDate > beginningOfToday) {
+                Pair(ContributionStatus.Done, fetchedDate)
+            } else {
+                Pair(ContributionStatus.NotYet, fetchedDate)
             }
-            onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
+        } catch (e: Exception) {
+            Pair(ContributionStatus.Error(e), target.lastCommitTime)
         }
+        onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
     }
 
     private fun hasAlreadyCommittedAfter(target: CheckTarget, beginningOfToday: Date?) =
