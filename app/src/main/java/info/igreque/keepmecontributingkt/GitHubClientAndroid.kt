@@ -51,12 +51,14 @@ class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
                         val target =
                             response.data()?.repository()?.ref()?.target()
                         if (target !is GetMasterQuery.AsCommit) {
-                            Log.w("GraphQL", "Assertion failure: target is not a commit: '$response'")
+                            Log.w("GraphQL", "Assertion failure: target is not a commit: '${response.data()}'")
+                            logErrors(response)
                             return
                         }
                         val nodes = target.history().nodes
                         if (nodes == null) {
-                            Log.w("GraphQL", "Assertion failure: Wrong response (nodes is null): '$response'")
+                            Log.w("GraphQL", "Assertion failure: Wrong response (nodes is null): '${response.data()}'")
+                            logErrors(response)
                             return
                         }
                         if (nodes.isEmpty()) {
@@ -75,4 +77,10 @@ class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
             )
 
         }
+
+    private fun logErrors(response: Response<*>) {
+        for (err in response.errors()) {
+            Log.w("GraphQL", err.toString())
+        }
+    }
 }
