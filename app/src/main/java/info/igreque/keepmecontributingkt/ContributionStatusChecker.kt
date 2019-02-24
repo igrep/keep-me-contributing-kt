@@ -17,11 +17,17 @@ class ContributionStatusChecker(
 
         val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
             time = getCurrentTime(Unit)
-            timeZone = TimeZone.getTimeZone("JST")
+            val jst = TimeZone.getTimeZone("Asia/Tokyo")
+            timeZone = jst
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
+            val jstTimeInMillis = time.time
+            val utc = TimeZone.getTimeZone("UTC")
+            timeZone = utc
+            val offset = utc.getOffset(jstTimeInMillis)
+            timeInMillis = jstTimeInMillis + offset
             time
         }
 
