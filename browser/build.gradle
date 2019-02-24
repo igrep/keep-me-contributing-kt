@@ -1,4 +1,5 @@
 apply plugin: 'kotlin2js'
+apply plugin: 'kotlin-dce-js'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
@@ -16,27 +17,18 @@ sourceSets {
     }
 }
 
-// From: https://kotlinlang.org/docs/tutorials/javascript/getting-started-gradle/getting-started-with-gradle.html
-task assembleWeb(type: Sync) {
-    // Use configurations.runtimeClasspath instead of configurations.compile.
-    // Ref: https://stackoverflow.com/questions/47910578/not-able-to-copy-configurations-dependencies-after-upgrading-gradle-plugin-for-a?rq=1
-    configurations.runtimeClasspath.each { file ->
-        from(zipTree(file.absolutePath), {
-            includeEmptyDirs = false
-            include { fileTreeElement ->
-                def path = fileTreeElement.path
-                path.endsWith(".js") && (path.startsWith("META-INF/resources/") ||
-                    !path.startsWith("META-INF/"))
-            }
-        })
-    }
-    from compileKotlin2Js.destinationDir
-    into "${projectDir}/dist/lib"
+def outDir = "${projectDir}/dist"
+def outFile = "${outDir}/${project.name}.js"
 
-    dependsOn classes
+clean.doFirst {
+    delete outDir
 }
 
 compileKotlin2Js {
     kotlinOptions.sourceMap = true
-    kotlinOptions.outputFile = "${projectDir}/dist/${project.name}.js"
+    kotlinOptions.outputFile = outFile
+}
+
+runDceKotlinJs {
+    dceOptions.outputDirectory = outDir
 }
