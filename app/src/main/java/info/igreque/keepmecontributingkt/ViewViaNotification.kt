@@ -43,7 +43,7 @@ class ViewViaNotification(private val context: Context) {
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
             setContentTitle("Have I contributed today?")
             setContentText(messageFromCheckResult(result))
-            setOngoing(shouldBeSticky(result))
+            setOngoing(false)
             setGroup(notificationGroup)
             setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
             priority = NotificationCompat.PRIORITY_DEFAULT
@@ -54,9 +54,6 @@ class ViewViaNotification(private val context: Context) {
 
         mNotificationManager.notify(NOTIFICATION_ID, builder.build())
     }
-
-    fun shouldBeSticky(result: ContributionStatusChecker.CheckResult): Boolean =
-        result.contributionStatus == ContributionStatus.NotYet
 
     fun messageFromCheckResult(result: ContributionStatusChecker.CheckResult): CharSequence =
         when (result.contributionStatus) {
