@@ -23,11 +23,6 @@ class ContributionStatusChecker(
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-            val jstTimeInMillis = time.time
-            val utc = TimeZone.getTimeZone("UTC")
-            timeZone = utc
-            val offset = utc.getOffset(jstTimeInMillis)
-            timeInMillis = jstTimeInMillis + offset
             time
         }
 
