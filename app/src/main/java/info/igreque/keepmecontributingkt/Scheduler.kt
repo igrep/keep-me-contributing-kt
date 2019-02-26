@@ -22,7 +22,7 @@ class Scheduler(private val context: Context) {
                     setImportantWhileForeground(true)
                 }
                 setRequiresDeviceIdle(false)
-                setPersisted(true)
+                setPersisted(false)
                 setPeriodic(5 * 60 * 1000) // 5 min. But actually forced to be 15 min by Android.
                 setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 setRequiresCharging(false)
