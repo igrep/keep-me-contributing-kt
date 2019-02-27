@@ -1,5 +1,6 @@
 package info.igreque.keepmecontributingkt
 
+import info.igreque.keepmecontributingkt.core.*
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.junit5.MockKExtension
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.fail
 import java.util.*
 
 @ExtendWith(MockKExtension::class)
@@ -20,9 +20,21 @@ class ContributionStatusCheckerTest {
     inner class StartPollingTest {
         private var lastCheckResult: ContributionStatusChecker.CheckResult? = null
         private val gitHubClient = mockk<GitHubClient>()
-        private var currentTime: Date? = null
         private val subject = ContributionStatusChecker(this::writeResult, gitHubClient) {
-            currentTime ?: fail("Date is not initialized!")
+            calendar.run {
+                set(Calendar.HOUR_OF_DAY, currentTimeHour)
+                set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth)
+                val currentTime = calendar.time.time
+
+                time = Date(currentTime)
+                val jst = TimeZone.getTimeZone("Asia/Tokyo")
+                timeZone = jst
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                time.time
+            }
         }
 
         private val calendar = Calendar.getInstance(Locale("ja", "JP", "JP"))
@@ -32,11 +44,6 @@ class ContributionStatusCheckerTest {
         @BeforeEach
         fun setup() {
             clearMocks(gitHubClient)
-
-            calendar.set(Calendar.HOUR_OF_DAY, currentTimeHour)
-            calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth)
-            currentTime = calendar.time
-
             lastCheckResult = null
         }
 
@@ -46,7 +53,7 @@ class ContributionStatusCheckerTest {
             @Test
             fun whenGitHubClientReturnsTimeOfToday() {
                 calendar.set(Calendar.HOUR_OF_DAY, currentTimeHour - 1)
-                val returnedTime = calendar.time
+                val returnedTime = calendar.time.time
                 coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.returns(returnedTime)
 
                 shouldCheckWithFinalResult(ContributionStatus.Done, returnedTime)
@@ -55,7 +62,7 @@ class ContributionStatusCheckerTest {
             @Test
             fun whenGitHubClientReturnsTimeOfYesterday() {
                 calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth - 1)
-                val returnedTime = calendar.time
+                val returnedTime = calendar.time.time
                 coEvery { gitHubClient.getLatestCommitDate("contributor", "repository") }.returns(returnedTime)
 
                 shouldCheckWithFinalResult(ContributionStatus.NotYet, returnedTime)
@@ -69,7 +76,7 @@ class ContributionStatusCheckerTest {
                 shouldCheckWithFinalResult(ContributionStatus.Error(exception), null)
             }
 
-            private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Date?) {
+            private fun shouldCheckWithFinalResult(expectedStatus: ContributionStatus, latestCommitTime: Timestamp?) {
                 val target = CheckTarget("contributor", "repository", "accessToken", null)
                 runBlocking { subject.doCheck(target) }
 
@@ -84,7 +91,7 @@ class ContributionStatusCheckerTest {
             fun shouldNeverCallOnChanged() {
                 calendar.set(Calendar.HOUR_OF_DAY, currentTimeHour - 1)
                 calendar.set(Calendar.DAY_OF_MONTH, currentTimeDayOfMonth)
-                val targetTime = calendar.time
+                val targetTime = calendar.time.time
                 val target = CheckTarget("repository", "contributor", "accessToken", targetTime)
                 runBlocking { subject.doCheck(target) }
                 assertThat(lastCheckResult).isNull()

@@ -1,11 +1,9 @@
-package info.igreque.keepmecontributingkt
-
-import java.util.*
+package info.igreque.keepmecontributingkt.core
 
 class ContributionStatusChecker(
     private val onChanged: (CheckResult) -> Unit,
     private val gitHubClient: GitHubClient,
-    private val getCurrentTime: (Unit) -> Date
+    private val getBeginningOfToday: (Unit) -> Timestamp
 ) {
     data class CheckResult(
         val target: CheckTarget,
@@ -15,16 +13,7 @@ class ContributionStatusChecker(
     suspend fun doCheck(target: CheckTarget) {
         if (!target.isFormFilled()) return
 
-        val beginningOfToday = Calendar.getInstance(Locale("ja", "JP", "JP")).run {
-            time = getCurrentTime(Unit)
-            val jst = TimeZone.getTimeZone("Asia/Tokyo")
-            timeZone = jst
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            time
-        }
+        val beginningOfToday = getBeginningOfToday(Unit)
 
         if (hasAlreadyCommittedAfter(target, beginningOfToday)) return
 
@@ -47,6 +36,6 @@ class ContributionStatusChecker(
         onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))
     }
 
-    private fun hasAlreadyCommittedAfter(target: CheckTarget, beginningOfToday: Date?) =
+    private fun hasAlreadyCommittedAfter(target: CheckTarget, beginningOfToday: Timestamp) =
         target.lastCommitTime != null && target.lastCommitTime > beginningOfToday
 }

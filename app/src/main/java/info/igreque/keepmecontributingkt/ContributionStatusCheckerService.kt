@@ -3,6 +3,7 @@ package info.igreque.keepmecontributingkt
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
+import info.igreque.keepmecontributingkt.core.LaunchCheckerInteraction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

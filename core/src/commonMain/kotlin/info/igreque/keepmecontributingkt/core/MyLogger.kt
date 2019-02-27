@@ -1,4 +1,4 @@
-package info.igreque.keepmecontributingkt
+package info.igreque.keepmecontributingkt.core
 
 interface MyLogger {
     fun e(message: String, err: Exception)

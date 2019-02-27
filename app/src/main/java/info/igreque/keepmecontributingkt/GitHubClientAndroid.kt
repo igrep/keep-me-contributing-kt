@@ -7,6 +7,8 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.response.CustomTypeAdapter
 import com.apollographql.apollo.response.CustomTypeValue
+import info.igreque.keepmecontributingkt.core.GitHubClient
+import info.igreque.keepmecontributingkt.core.Timestamp
 import info.igreque.keepmecontributingkt.type.CustomType
 import okhttp3.OkHttpClient
 import java.text.SimpleDateFormat
@@ -38,7 +40,7 @@ class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
             dateFormat.parse(value.value.toString())
     }
 
-    override suspend fun getLatestCommitDate(contributorName: String, repositoryName: String): Date =
+    override suspend fun getLatestCommitDate(contributorName: String, repositoryName: String): Timestamp =
         suspendCoroutine { cont ->
             ApolloClient.builder().run {
                 okHttpClient(okHttpClient)
@@ -66,7 +68,7 @@ class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
                             return
                         }
                         nodes.forEach {
-                            cont.resumeWith(Result.success(it.committedDate()))
+                            cont.resumeWith(Result.success(it.committedDate().time))
                         }
                     }
 

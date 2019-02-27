@@ -1,6 +1,7 @@
 package info.igreque.keepmecontributingkt
 
 import android.util.Log
+import info.igreque.keepmecontributingkt.core.MyLogger
 
 object MyLoggerAndroid : MyLogger {
     override fun e(message: String, err: Exception) {

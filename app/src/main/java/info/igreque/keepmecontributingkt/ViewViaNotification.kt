@@ -6,6 +6,8 @@ import android.content.Context
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationCompat.GROUP_ALERT_SUMMARY
+import info.igreque.keepmecontributingkt.core.ContributionStatus
+import info.igreque.keepmecontributingkt.core.ContributionStatusChecker
 
 class ViewViaNotification(private val context: Context) {
     private val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL)

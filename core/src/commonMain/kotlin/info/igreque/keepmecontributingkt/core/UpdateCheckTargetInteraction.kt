@@ -1,4 +1,4 @@
-package info.igreque.keepmecontributingkt
+package info.igreque.keepmecontributingkt.core
 
 class UpdateCheckTargetInteraction(private val env: Env) {
     suspend fun run(userName: CharSequence, repositoryName: CharSequence, accessToken: CharSequence) {

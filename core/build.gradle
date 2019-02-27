@@ -1,0 +1,43 @@
+apply plugin: 'kotlin-multiplatform'
+
+kotlin {
+    js()
+    jvm {
+        compilations.main.kotlinOptions {
+            // Setup the Kotlin compiler options for the 'main' compilation:
+            jvmTarget = "1.8"
+        }
+
+        compilations.main.compileKotlinTask // get the Kotlin task 'compileKotlinJvm'
+        compilations.main.output // get the main compilation output
+        compilations.test.runtimeDependencyFiles // get the test runtime classpath
+    }
+
+    targets.all {
+        compilations.all {
+            kotlinOptions {
+                allWarningsAsErrors = true
+            }
+        }
+    }
+
+    sourceSets {
+        all {
+            languageSettings {
+                languageVersion = '1.3'
+                apiVersion = '1.3'
+            }
+        }
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.1.1"
+            }
+        }
+        jvm().compilations.main.defaultSourceSet {
+            dependencies {
+                implementation kotlin('stdlib-jdk7')
+            }
+        }
+    }
+}

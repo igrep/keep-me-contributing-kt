@@ -1,4 +1,4 @@
-package info.igreque.keepmecontributingkt
+package info.igreque.keepmecontributingkt.core
 
 class LaunchCheckerInteraction(
     private val env: Env

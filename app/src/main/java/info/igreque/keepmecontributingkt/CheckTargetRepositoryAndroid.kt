@@ -1,7 +1,9 @@
 package info.igreque.keepmecontributingkt
 
 import android.content.Context
-import java.util.*
+import info.igreque.keepmecontributingkt.core.CheckTarget
+import info.igreque.keepmecontributingkt.core.CheckTargetRepository
+import info.igreque.keepmecontributingkt.core.Timestamp
 
 class CheckTargetRepositoryAndroid(private val context: Context) : CheckTargetRepository {
     private val fileName = "pref"
@@ -17,13 +19,13 @@ class CheckTargetRepositoryAndroid(private val context: Context) : CheckTargetRe
         editor.putString(keyContributorName, target.contributorName.toString())
         editor.putString(keyRepositoryName, target.repositoryName.toString())
         editor.putString(keyAccessToken, target.accessToken.toString())
-        editor.putLong(keyLastCommitTime, (target.lastCommitTime?.time ?: nullTime))
+        editor.putLong(keyLastCommitTime, (target.lastCommitTime ?: nullTime))
         editor.apply()
     }
 
-    override fun updateLastCommitTime(lastCommitTime: Date) {
+    override fun updateLastCommitTime(lastCommitTime: Timestamp) {
         val editor = context.getSharedPreferences(fileName, Context.MODE_PRIVATE).edit()
-        editor.putLong(keyLastCommitTime, lastCommitTime.time)
+        editor.putLong(keyLastCommitTime, lastCommitTime)
         editor.apply()
     }
 
@@ -37,7 +39,7 @@ class CheckTargetRepositoryAndroid(private val context: Context) : CheckTargetRe
             if (lastCommitTime == nullTime) {
                 null
             } else {
-                Date(lastCommitTime)
+                lastCommitTime
             }
         )
     }
