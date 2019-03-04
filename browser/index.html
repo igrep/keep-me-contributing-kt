@@ -1,12 +1,34 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Hello, KotlinJS!</title>
-    <script type="text/javascript" charset="UTF-8" src="dist/kotlin.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="dist/browser.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="shortcut icon" href="img/favicon-loading.ico" type="image/vnd.microsoft.icon"/>
+    <link rel="icon" href="img/favicon-loading.ico" type="image/vnd.microsoft.icon"/>
+    <link rel="apple-touch-icon" href="img/icon.png"/>
+    <title>Have I contributed today?</title>
 </head>
 <body>
+<div id="container">
+    <h1>Have I contributed today?</h1>
+    <div id="contributionStatus"></div>
+    <div class="betweenStatusAndForm"></div>
+    <h1>Repository Settings</h1>
+    <form>
+        <dl>
+            <dt><label for="inputContributorName">GitHub User Name:</label></dt>
+            <dd><input type="text" id="inputContributorName"/></dd>
+            <dt><label for="inputRepositoryName">Repository Name:</label></dt>
+            <dd><input type="text" id="inputRepositoryName"/></dd>
+            <dt><label for="inputAccessToken">GitHub Personal Access Token:</label></dt>
+            <dd><input type="password" id="inputAccessToken"/></dd>
+        </dl>
+    </form>
+</div>
+<script type="text/javascript" charset="UTF-8" src="dist/kotlin.js"></script>
+<script type="text/javascript" charset="UTF-8" src="dist/core.js"></script>
+<script type="text/javascript" charset="UTF-8" src="dist/kotlinx-coroutines-core.js"></script>
+<script type="text/javascript" charset="UTF-8" src="dist/browser.js"></script>
 </body>
 </html>

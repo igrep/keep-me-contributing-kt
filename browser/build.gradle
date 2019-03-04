@@ -2,7 +2,9 @@ apply plugin: 'kotlin2js'
 apply plugin: 'kotlin-dce-js'
 
 dependencies {
+    implementation project(":core")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.1.1"
 }
 
 repositories {
@@ -24,11 +26,21 @@ clean.doFirst {
     delete outDir
 }
 
+task copyGraphQlFile(type: Copy) {
+    from "${projectDir}/../app/src/main/graphql/info/igreque/keepmecontributingkt/GetMaster.graphql"
+    into outDir
+}
+
 compileKotlin2Js {
     kotlinOptions.sourceMap = true
     kotlinOptions.outputFile = outFile
 }
 
+compileKotlin2Js.doLast {
+    tasks.copyGraphQlFile.execute()
+}
+
 runDceKotlinJs {
     dceOptions.outputDirectory = outDir
+    dceOptions.devMode = false
 }

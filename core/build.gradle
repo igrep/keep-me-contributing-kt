@@ -39,5 +39,11 @@ kotlin {
                 implementation kotlin('stdlib-jdk7')
             }
         }
+        js().compilations.main.defaultSourceSet {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.1.1"
+            }
+        }
     }
 }
