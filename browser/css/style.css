@@ -1,0 +1,58 @@
+@media (min-width: 720px){
+  #container {
+    width: 700px;
+    font-size: 13pt;
+    margin: auto;
+  }
+}
+
+/** Contribution Status **/
+
+h1 {
+  text-align: center;
+}
+@media (max-width: 700px){
+  h1 {
+    font-size: 110%;
+  }
+}
+
+.loading, .success, .danger, .warning {
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 3px;
+
+  text-align: center;
+  padding: 1em;
+  margin: 1em;
+}
+
+.loading {
+  background-color: #CACACA;
+  border-color: #000000;
+}
+
+.success {
+  background-color: #B1FFB2;
+  border-color: #4BFF3F;
+}
+
+.danger {
+  background-color: #FFC2C3;
+  border-color: #FF6258;
+}
+
+.warning {
+  background-color: #FFFCA7;
+  border-color: #FDE14F;
+}
+
+.betweenStatusAndForm {
+  border: solid 1px #CCC;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.toggleCheckboxWithLabel {
+  margin-bottom: 1em;
+}
