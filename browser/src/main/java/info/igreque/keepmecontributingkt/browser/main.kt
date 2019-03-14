@@ -1,11 +1,11 @@
-import info.igreque.keepmecontributingkt.browser.CheckTargetRepositoryBrowser
-import info.igreque.keepmecontributingkt.browser.GitHubClientJs
-import info.igreque.keepmecontributingkt.browser.PeriodicalExecutor
+import info.igreque.keepmecontributingkt.browser.*
 import info.igreque.keepmecontributingkt.core.LaunchCheckerInteraction
 import info.igreque.keepmecontributingkt.core.UpdateCheckTargetInteraction
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.get
 import kotlin.browser.document
 
 fun main() {
@@ -16,9 +16,15 @@ fun main() {
         val inputRepositoryName = getInputElement("inputRepositoryName")
         val inputAccessToken = getInputElement("inputAccessToken")
 
+        val faviconElements = document.querySelectorAll("link[type=\"image/vnd.microsoft.icon\"]")
+        val views: Array<CheckResultView> = arrayOf(
+            FaviconView(faviconElements[0] as Element),
+            FaviconView(faviconElements[1] as Element)
+        )
+
         val pe = PeriodicalExecutor {
             GlobalScope.launch {
-                LaunchCheckerInteraction(EnvBrowser(inputAccessToken.value, query)).run()
+                LaunchCheckerInteraction(EnvBrowser(inputAccessToken.value, query, *views)).run()
             }
         }
 
@@ -33,7 +39,7 @@ fun main() {
 
             val accessToken = inputAccessToken.value
             GlobalScope.launch {
-                UpdateCheckTargetInteraction(EnvBrowser(accessToken, query)).run(
+                UpdateCheckTargetInteraction(EnvBrowser(accessToken, query, *views)).run(
                     inputContributorName.value,
                     inputRepositoryName.value,
                     accessToken
