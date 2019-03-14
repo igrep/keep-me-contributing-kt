@@ -16,22 +16,26 @@ fun main() {
         val inputRepositoryName = getInputElement("inputRepositoryName")
         val inputAccessToken = getInputElement("inputAccessToken")
 
+        val target = CheckTargetRepositoryBrowser.load()
+        inputContributorName.value = target.contributorName.toString()
+        inputRepositoryName.value = target.repositoryName.toString()
+        inputAccessToken.value = target.accessToken.toString()
+
         val faviconElements = document.querySelectorAll("link[type=\"image/vnd.microsoft.icon\"]")
         val views: Array<CheckResultView> = arrayOf(
             FaviconView(faviconElements[0] as Element),
             FaviconView(faviconElements[1] as Element)
         )
 
+        val initialEnv = EnvBrowser(inputAccessToken.value, query, *views)
+        GlobalScope.launch {
+            LaunchCheckerInteraction(initialEnv).run()
+        }
         val pe = PeriodicalExecutor {
             GlobalScope.launch {
-                LaunchCheckerInteraction(EnvBrowser(inputAccessToken.value, query, *views)).run()
+                LaunchCheckerInteraction(initialEnv).run()
             }
         }
-
-        val target = CheckTargetRepositoryBrowser.load()
-        inputContributorName.value = target.contributorName.toString()
-        inputRepositoryName.value = target.repositoryName.toString()
-        inputAccessToken.value = target.accessToken.toString()
 
         document.getElementById("formCheckTarget")!!.addEventListener("submit", {
             it.preventDefault()

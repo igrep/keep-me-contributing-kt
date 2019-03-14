@@ -40,11 +40,17 @@ class ViewViaNotification(private val context: Context) {
     }
 
     fun show(result: ContributionStatusChecker.CheckResult) {
+        val iconId = iconIdFromResult(result)
+        val message = messageFromCheckResult(result)
+        if (iconId == null || message == null) {
+            return
+        }
+
         builder.apply {
-            setSmallIcon(iconIdFromResult(result))
+            setSmallIcon(iconId)
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
             setContentTitle("Have I contributed today?")
-            setContentText(messageFromCheckResult(result))
+            setContentText(message)
             setOngoing(false)
             setGroup(notificationGroup)
             setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
@@ -57,7 +63,7 @@ class ViewViaNotification(private val context: Context) {
         mNotificationManager.notify(NOTIFICATION_ID, builder.build())
     }
 
-    fun messageFromCheckResult(result: ContributionStatusChecker.CheckResult): CharSequence =
+    fun messageFromCheckResult(result: ContributionStatusChecker.CheckResult): CharSequence? =
         when (result.contributionStatus) {
             ContributionStatus.Unknown ->
                 "Checking the contributions by ${result.target.contributorName} to ${result.target.repositoryName}..."
@@ -65,11 +71,13 @@ class ViewViaNotification(private val context: Context) {
                 "Watch out! NO contributions by ${result.target.contributorName} to ${result.target.repositoryName} today!"
             ContributionStatus.Done ->
                 "Yahoo! ${result.target.contributorName} has already contributed to ${result.target.repositoryName} today!"
+            ContributionStatus.DoneNoCheck ->
+                null
             is ContributionStatus.Error ->
                 "Error when checking the contributions by  ${result.target.contributorName} to ${result.target.repositoryName}! See LogCat."
         }
 
-    fun iconIdFromResult(result: ContributionStatusChecker.CheckResult): Int =
+    fun iconIdFromResult(result: ContributionStatusChecker.CheckResult): Int? =
         when (result.contributionStatus) {
             ContributionStatus.Unknown ->
                 R.drawable.ic_notify_unknown
@@ -77,6 +85,8 @@ class ViewViaNotification(private val context: Context) {
                 R.drawable.ic_notify_not_yet
             ContributionStatus.Done ->
                 R.drawable.ic_notify_done
+            ContributionStatus.DoneNoCheck ->
+                null
             is ContributionStatus.Error ->
                 R.drawable.ic_notify_error
         }

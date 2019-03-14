@@ -13,6 +13,10 @@ sealed class ContributionStatus {
         override fun toString() = "ContributionStatus.Done"
     }
 
+    object DoneNoCheck : ContributionStatus() {
+        override fun toString() = "ContributionStatus.DoneNoCheck"
+    }
+
     data class Error(val exception: Exception) : ContributionStatus() {
         override fun toString(): String =
             "ContributionStatus.Error($exception)"

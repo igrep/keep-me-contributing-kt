@@ -94,7 +94,8 @@ class ContributionStatusCheckerTest {
                 val targetTime = calendar.time.time
                 val target = CheckTarget("repository", "contributor", "accessToken", targetTime)
                 runBlocking { subject.doCheck(target) }
-                assertThat(lastCheckResult).isNull()
+                assertThat(lastCheckResult?.contributionStatus).isEqualTo(ContributionStatus.DoneNoCheck)
+                assertThat(lastCheckResult?.target?.lastCommitTime).isEqualTo(targetTime)
             }
         }
 

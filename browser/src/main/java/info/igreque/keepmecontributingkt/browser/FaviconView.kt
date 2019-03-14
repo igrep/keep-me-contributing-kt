@@ -13,6 +13,8 @@ class FaviconView(private val element: Element) : CheckResultView {
                 "not_yet"
             ContributionStatus.Done ->
                 "contributed"
+            ContributionStatus.DoneNoCheck ->
+                "contributed"
             is ContributionStatus.Error ->
                 "error"
         }

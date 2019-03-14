@@ -15,9 +15,12 @@ class ContributionStatusChecker(
 
         val beginningOfToday = getBeginningOfToday(Unit)
 
-        if (hasAlreadyCommittedAfter(target, beginningOfToday)) return
-
         onChanged(CheckResult(target, ContributionStatus.Unknown))
+
+        if (hasAlreadyCommittedAfter(target, beginningOfToday)) {
+            onChanged(CheckResult(target, ContributionStatus.DoneNoCheck))
+            return
+        }
 
         val (contributionStatus, latestCommitDate) = try {
             val fetchedDate = gitHubClient.getLatestCommitDate(
