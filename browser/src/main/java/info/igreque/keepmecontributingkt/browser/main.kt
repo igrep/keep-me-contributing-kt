@@ -24,7 +24,8 @@ fun main() {
         val faviconElements = document.querySelectorAll("link[type=\"image/vnd.microsoft.icon\"]")
         val views: Array<CheckResultView> = arrayOf(
             FaviconView(faviconElements[0] as Element),
-            FaviconView(faviconElements[1] as Element)
+            FaviconView(faviconElements[1] as Element),
+            BannerView(document.getElementById("contributionStatus") as Element)
         )
 
         val initialEnv = EnvBrowser(inputAccessToken.value, query, *views)
