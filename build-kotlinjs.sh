@@ -16,7 +16,7 @@ set +o pipefail
 yes | android-sdk-linux/tools/bin/sdkmanager --licenses
 set -o pipefail
 
-bash ./gradlew assemble
+bash ./gradlew assemble -x lintVitalRelease
 bash ./gradlew browser:runDceKotlinJs
 mkdir -p public/dist/
 cp browser/dist/*.graphql browser/dist/*.js public/dist/
