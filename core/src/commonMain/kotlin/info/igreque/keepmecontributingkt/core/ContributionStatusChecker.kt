@@ -33,7 +33,7 @@ class ContributionStatusChecker(
             } else {
                 Pair(ContributionStatus.NotYet, fetchedDate)
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Pair(ContributionStatus.Error(e), target.lastCommitTime)
         }
         onChanged(CheckResult(target.updateLastCommitTime(latestCommitDate), contributionStatus))

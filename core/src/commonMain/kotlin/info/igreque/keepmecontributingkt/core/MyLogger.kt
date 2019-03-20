@@ -1,7 +1,7 @@
 package info.igreque.keepmecontributingkt.core
 
 interface MyLogger {
-    fun e(message: String, err: Exception)
+    fun e(message: String, err: Throwable)
     fun w(message: String)
     fun i(message: String)
 

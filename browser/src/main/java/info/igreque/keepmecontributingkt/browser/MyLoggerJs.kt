@@ -10,7 +10,7 @@ object MyLoggerJs : MyLogger {
         console.info(Date().toString(), message)
     }
 
-    override fun e(message: String, err: Exception) {
+    override fun e(message: String, err: Throwable) {
         console.error(Date().toString(), message, err)
     }
 }
