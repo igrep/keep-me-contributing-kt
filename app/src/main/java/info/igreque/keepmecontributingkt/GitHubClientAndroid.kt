@@ -1,6 +1,5 @@
 package info.igreque.keepmecontributingkt
 
-import android.util.Log
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
@@ -53,18 +52,22 @@ class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
                         val target =
                             response.data()?.repository()?.ref()?.target()
                         if (target !is GetMasterQuery.AsCommit) {
-                            Log.w("GraphQL", "Assertion failure: target is not a commit: '${response.data()}'")
-                            logErrors(response)
+                            val errMessages = buildErrorMessage(response)
+                            cont.resumeWithException(
+                                RuntimeException("Assertion failure: target is not a commit: '${response.data()}'. The errors are: $errMessages")
+                            )
                             return
                         }
                         val nodes = target.history().nodes
                         if (nodes == null) {
-                            Log.w("GraphQL", "Assertion failure: Wrong response (nodes is null): '${response.data()}'")
-                            logErrors(response)
+                            val errMessages = buildErrorMessage(response)
+                            cont.resumeWithException(
+                                RuntimeException("Assertion failure: Wrong response (nodes is null): '${response.data()}'. The errors are: $errMessages")
+                            )
                             return
                         }
                         if (nodes.isEmpty()) {
-                            Log.w("GraphQL", "Empty nodes returned by GitHub")
+                            cont.resumeWithException(RuntimeException("Empty nodes returned by GitHub"))
                             return
                         }
                         nodes.forEach {
@@ -80,9 +83,6 @@ class GitHubClientAndroid(private val accessToken: String) : GitHubClient {
 
         }
 
-    private fun logErrors(response: Response<*>) {
-        for (err in response.errors()) {
-            Log.w("GraphQL", err.toString())
-        }
-    }
+    private fun buildErrorMessage(response: Response<GetMasterQuery.Data>) =
+        response.errors().joinToString(", ", "[", "]") { it.toString() }
 }
