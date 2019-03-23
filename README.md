@@ -4,7 +4,7 @@ Check if you have contributed to the configured repository today.
 Runs as a native Android app or a browser app.  
 Written pulely in Kotlin (thanks to Kotlin/JS!).
 
-## Why I created.
+## Why?
 
 **I never want to miss to fill [the contribution map in GitHub](https://github.com/igrep).**  
 To accomplish that, I decided to update [this repository](https://github.com/igrep/daily-commits) every day.  
