@@ -15,7 +15,7 @@ Updating the repository is not directly connected to contributions to OSSs, but 
 
 1. Go to [keep-me-contributing.igreque.info](https://keep-me-contributing.igreque.info/).
 1. Enter your GitHub user name, repository name to check the latest commit date, and your [pesonal access token for GitHub](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line), then click `Start Checking`.
-1. The app checks the `commttedDate` of the latest commit on the master branch of `https://github.com/<your-github-user-name>/<repository-name>` with [GitHub API](https://developer.github.com/v4/).
+1. The app periodically (every about 5 mins.) checks the `commttedDate` of the latest commit on the master branch of `https://github.com/<your-github-user-name>/<repository-name>` with [GitHub API](https://developer.github.com/v4/).
     - Then if the latest commit date is not later than the beginning of today, the app warns you ⚠️.
 1. That's it!
 
