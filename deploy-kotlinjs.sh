@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -eux
 
 bash ./gradlew browser:runDceKotlinJs
