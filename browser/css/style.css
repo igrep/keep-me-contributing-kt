@@ -61,3 +61,8 @@ h1 {
 .toggleCheckboxWithLabel {
   margin-bottom: 1em;
 }
+
+footer {
+  padding-top: 3em;
+  text-align: right;
+}
