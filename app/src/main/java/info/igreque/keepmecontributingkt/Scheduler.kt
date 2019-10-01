@@ -19,7 +19,7 @@ class Scheduler(private val context: Context) {
             .apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     setEstimatedNetworkBytes(estimatedDownloadBytes, estimatedUploadBytes)
-                    setImportantWhileForeground(true)
+                    setImportantWhileForeground(false)
                 }
                 setRequiresDeviceIdle(false)
                 setPersisted(false)
